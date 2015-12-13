@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Localpedia{% if query %}: {{ query }}{% endif %}</title>
+  </head>
+  <body>
+    <h1>Localpedia</h1>
+    <form action="" method="GET">
+      <label>
+        Buscar:
+        <input type="search" id="q" name="q" value="{{ query }}">
+      </label>
+      <input type="hidden" name="page" value="1">
+      <button type="submit">Buscar</button>
+    </form>
+    <script>
+    var qfield = document.getElementById('q');
+    qfield.setSelectionRange(0, qfield.value.length);
+    qfield.select();
+    </script>
+    {% if query %}
+      <h2>Resultados para {{ query }}</h2>
+      {% if solr.docs %}
+        <p>Página {{ page }} de {{ page_max }}</p>
+        <p>Páginas:
+        {% for i in range(1, page_max+1) %}
+          {% if i == page %}
+            {{ i }}
+          {% else %}
+            <a href="?q={{ query }}&page={{ i }}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}</p>
+        <ul>
+          {% for doc in solr.docs %}
+          <li>
+            <div><a href="{{ doc.url }}">{{ doc.title }}</a></div>
+            <div>{{ doc.abstract }}</div>
+          </li>
+          {% endfor %}
+        </ul>
+        Páginas:
+        {% for i in range(1, page_max+1) %}
+          {% if i == page %}
+            {{ i }}
+          {% else %}
+            <a href="?q={{ query }}&page={{ i }}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>No se han encontrado resultados.</p>
+      {% endif %}
+    {% endif %}
+  </body>
+</html>
